@@ -17,7 +17,7 @@ for i in [0, 0.5, 3, 10, 50]:
              monte_carlo_steps_per_frame=10000,
              filename=f'{interaction_strength}_kT {amount_of_particles}_particles')
     animate(f'{interaction_strength}_kT {amount_of_particles}_particles.npz')
-    #get_pair_correlation_of_last_frames(f'{interaction_strength}_kT {amount_of_particles}_particles.npz', amount_of_frames=200)
+    get_pair_correlation_of_last_frames(f'{interaction_strength}_kT {amount_of_particles}_particles.npz', amount_of_frames=200)
 
 end_time = datetime.now()
 print(f"Finished at {end_time.strftime('%Y-%m-%d %H:%M:%S')}")
