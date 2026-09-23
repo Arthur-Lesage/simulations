@@ -2,7 +2,8 @@ import numpy as np
 import matplotlib.pyplot as plt
 from matplotlib.animation import FuncAnimation
 
-##THIS WAS MOSTLY WRITTEN USING AI
+#THIS WAS MOSTLY WRITTEN USING AI AND IS ONLY USED TO 
+#VISUALLY REPRESENT THE DATA FROM monte_carlo_particle_simulation.py. 
 
 def animate_positions(pos, particle_radius, metadata, box_size, interval=200):
 
