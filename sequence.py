@@ -9,18 +9,18 @@ print(f"Started at {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
 box_size = 50
 particle_diameter = 1    #sigma
 amount_of_particles = 1000
-for i in [3]:
+for i in [10]:
     interaction_strength = i
 
     print('Simulation:')
-    simulate(amount_of_particles=amount_of_particles,
-            interaction_strength=interaction_strength,
-            box_size=box_size,
-            particle_diameter=particle_diameter,
-            steps=10**7,
-            equilibration_steps=10**6,
-            monte_carlo_steps_per_frame=10**4,
-            filename=f'{interaction_strength}_kT {amount_of_particles}_particles')
+    #simulate(amount_of_particles=amount_of_particles,
+    #        interaction_strength=interaction_strength,
+    #        box_size=box_size,
+    #        particle_diameter=particle_diameter,
+    #        steps=10**7,
+    #        equilibration_steps=10**6,
+    #        monte_carlo_steps_per_frame=10**4,
+    #        filename=f'{interaction_strength}_kT {amount_of_particles}_particles')
     print('Animation:')
     animate(f'{interaction_strength}_kT {amount_of_particles}_particles.npz')
     #print('Pair correlation function:')
