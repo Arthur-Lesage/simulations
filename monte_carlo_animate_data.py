@@ -146,8 +146,7 @@ def animate_positions(pos, particle_radius, metadata, box_size, interval=200):
 def save_animation(ani, total_frames, filename, fps=30):
 
     def progress(frame, total):
-        percent = 100 * frame / total
-        print(f"\rSaving animation {filename[:-4]}: {percent:.1f}%", end="")
+        print(f"Frame {frame}/{total} ({100 * frame / total:.1f}%)", end="")
 
     ani.save(
         f'animations/{filename}',

@@ -6,18 +6,25 @@ from datetime import datetime
 start_time = datetime.now()
 print(f"Started at {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
 
-box_size = 100
+box_size = 50
+particle_diameter = 1    #sigma
 amount_of_particles = 1000
-for i in [0, 0.5, 3, 10, 50]:
+for i in [3]:
     interaction_strength = i
 
+    print('Simulation:')
     simulate(amount_of_particles=amount_of_particles,
-             interaction_strength=interaction_strength,
-             frames=1800, box_size=box_size,
-             monte_carlo_steps_per_frame=10000,
-             filename=f'{interaction_strength}_kT {amount_of_particles}_particles')
+            interaction_strength=interaction_strength,
+            box_size=box_size,
+            particle_diameter=particle_diameter,
+            steps=10**7,
+            equilibration_steps=10**6,
+            monte_carlo_steps_per_frame=10**4,
+            filename=f'{interaction_strength}_kT {amount_of_particles}_particles')
+    print('Animation:')
     animate(f'{interaction_strength}_kT {amount_of_particles}_particles.npz')
-    get_pair_correlation_of_last_frames(f'{interaction_strength}_kT {amount_of_particles}_particles.npz', amount_of_frames=200)
+    #print('Pair correlation function:')
+    #get_pair_correlation_of_last_frames(f'{interaction_strength}_kT {amount_of_particles}_particles.npz', bin_size=0.02, amount_of_frames=200)
 
 end_time = datetime.now()
 print(f"Finished at {end_time.strftime('%Y-%m-%d %H:%M:%S')}")

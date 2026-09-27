@@ -1,7 +1,6 @@
 import numpy as np
 from matplotlib import pyplot as plt
-UM = 1e-6  # micrometer
-def make_plot(g, r, data, averaged_frames, filename):
+def save_plot(g, r, data, averaged_frames, filename):
     fig = plt.figure(figsize=(15, 9))
     ax = fig.add_axes([0.06, 0.08, 0.70, 0.88])
     info_ax = fig.add_axes([0.78, 0.03, 0.20, 0.88])
@@ -49,22 +48,19 @@ def make_plot(g, r, data, averaged_frames, filename):
 
     ax.plot(r, g)
 
-    fig.savefig(f'pair correlation functions/{filename}')
+    fig.savefig(f'pair correlation plots/{filename}')
 
-    print('Done!')
-
-
-def get_pair_correlation_of_last_frames(filename, bin_size = 10**-1, amount_of_frames = 1):
+def get_pair_correlation_of_last_frames(filename, bin_size = 0.02, amount_of_frames = 1):
 
     print(f"\rGetting pair correlation function of {filename[:-4]}")
 
-    bin_size *= UM
     data = np.load(f"position data/{filename}", allow_pickle=True)
     box_size = data["BOX_SIZE"]
     N = data["AMOUNT_OF_PARTICLES"]
+    cut_off = data["CUT_OFF"]
 
     r_max = box_size / 2
-    bins = np.arange(0, r_max + bin_size, bin_size)
+    bins = np.arange(0, cut_off + bin_size, bin_size)
 
     pos = data["pos"]
     hist_total = np.zeros(len(bins) - 1)
@@ -85,4 +81,13 @@ def get_pair_correlation_of_last_frames(filename, bin_size = 10**-1, amount_of_f
     r = edges[:-1] + dr / 2
     g = hist_total * box_size ** 2 / (np.pi * r * dr * N ** 2)
 
-    make_plot(g, r, data, amount_of_frames, f"{filename[:-4]}.png")
+    np.savez(f'pair correlation data/{filename}',
+            g=g,
+            r=r,
+            dr=dr
+            )
+
+    save_plot(g, r, data, amount_of_frames, f"{filename[:-4]}.png")
+
+    print('Done!')
+
