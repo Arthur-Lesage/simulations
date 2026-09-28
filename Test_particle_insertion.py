@@ -20,6 +20,8 @@ kT = 1 ##&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&REMOVE THIS LINEEEEEEEE&&&&&&&&&&&&&&&
 
 
 N_TP = int(np.round(np.sqrt(10*N))**2)
+N_TP = int(np.round(np.sqrt(N/10))**2)##&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&REMOVE THIS LINEEEEEEEE&&&&&&&&&&&&&&&&&
+
 
 cols = int(np.sqrt(N_TP))
 spacing = box_size / cols
@@ -33,8 +35,15 @@ for TP in TP_pos.T:
     distances = np.linalg.norm(pos.T - TP, axis=1)
     distances = np.where(distances < cut_off, distances, np.nan)
     histogram = np.histogram(distances, bins=np.arange(0, cut_off + bin_size, bin_size))[0]
-    comparision_matrix.append(histogram)
+    comparision_matrix.append(histogram)    
+comparision_matrix = np.array(comparision_matrix)
 
 g_HD = g_data['g']
 
 u_0 = -kT * np.log(g_HD)
+
+TP_additional_energy = u_0 @ comparision_matrix.T
+exponential = np.exp(-TP_additional_energy/kT)
+
+local_average= comparision_matrix.T @ exponential
+print(local_average)

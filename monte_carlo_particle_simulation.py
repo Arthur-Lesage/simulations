@@ -107,7 +107,7 @@ def simulate(amount_of_particles = 100, interaction_strength = 1, cut_off = 5, k
             AMOUNT_OF_PARTICLES=N, ##optional information
             INTERACTION_STRENGTH=f'{interaction_strength} kT',
             VOLUME_FRACTION=volume_fraction,
-            kT=fkT',
+            kT=kT,
             STARTING_POSITION = starting_position,
             AMOUNT_OF_STEPS = steps,
             STEPS_PER_FRAME = monte_carlo_steps_per_frame,
