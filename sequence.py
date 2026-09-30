@@ -9,22 +9,21 @@ print(f"Started at {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
 box_size = 50
 particle_diameter = 1    #sigma
 amount_of_particles = 1000
-for i in [10]:
+for i in [1,2]:
     interaction_strength = i
-
-    print('Simulation:')
-    #simulate(amount_of_particles=amount_of_particles,
-    #        interaction_strength=interaction_strength,
-    #        box_size=box_size,
-    #        particle_diameter=particle_diameter,
-    #        steps=10**7,
-    #        equilibration_steps=10**6,
-    #        monte_carlo_steps_per_frame=10**4,
-    #        filename=f'{interaction_strength}_kT {amount_of_particles}_particles')
-    print('Animation:')
+    print(f'Caculating {interaction_strength}_kT {amount_of_particles}_particles:')
+    simulate(amount_of_particles=amount_of_particles,
+            interaction_strength=interaction_strength,
+            box_size=box_size,
+            particle_diameter=particle_diameter,
+            steps=10**7,
+            equilibration_steps=10**6,
+            monte_carlo_steps_per_frame=10**4,
+            filename=f'{interaction_strength}_kT {amount_of_particles}_particles')
     animate(f'{interaction_strength}_kT {amount_of_particles}_particles.npz')
-    #print('Pair correlation function:')
-    #get_pair_correlation_of_last_frames(f'{interaction_strength}_kT {amount_of_particles}_particles.npz', bin_size=0.02, amount_of_frames=200)
+    get_pair_correlation_of_last_frames(f'{interaction_strength}_kT {amount_of_particles}_particles.npz',
+                                        bin_size=0.02,
+                                        amount_of_frames=900)
 
 end_time = datetime.now()
 print(f"Finished at {end_time.strftime('%Y-%m-%d %H:%M:%S')}")

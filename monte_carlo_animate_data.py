@@ -146,7 +146,7 @@ def animate_positions(pos, particle_radius, metadata, box_size, interval=200):
 def save_animation(ani, total_frames, filename, fps=30):
 
     def progress(frame, total):
-        print(f"Frame {frame}/{total} ({100 * frame / total:.1f}%)", end="")
+        print(f"\rAnimating frame {frame} of {total} ({100 * frame / total:.1f}%)", end="")
 
     ani.save(
         f'animations/{filename}',
@@ -156,7 +156,7 @@ def save_animation(ani, total_frames, filename, fps=30):
         progress_callback=lambda i, n: progress(i, total_frames)
     )
 
-    print("\nDone!")
+    print("\rAnimation Done!                         ")
 
 def animate(filename, fps=30):
 

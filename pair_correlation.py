@@ -52,14 +52,13 @@ def save_plot(g, r, data, averaged_frames, filename):
 
 def get_pair_correlation_of_last_frames(filename, bin_size = 0.02, amount_of_frames = 1):
 
-    print(f"\rGetting pair correlation function of {filename[:-4]}")
+    print(f"\rGetting pair correlation")
 
     data = np.load(f"position data/{filename}", allow_pickle=True)
     box_size = data["BOX_SIZE"]
     N = data["AMOUNT_OF_PARTICLES"]
     cut_off = data["CUT_OFF"]
 
-    r_max = box_size / 2
     bins = np.arange(0, cut_off + bin_size, bin_size)
 
     pos = data["pos"]
@@ -84,10 +83,11 @@ def get_pair_correlation_of_last_frames(filename, bin_size = 0.02, amount_of_fra
     np.savez(f'pair correlation data/{filename}',
             g=g,
             r=r,
-            dr=dr
+            dr=dr,
+            BIN_SIZE = bin_size
             )
 
     save_plot(g, r, data, amount_of_frames, f"{filename[:-4]}.png")
 
-    print('Done!')
+    print('\rPair correlation function done!')
 

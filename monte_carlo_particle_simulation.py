@@ -83,7 +83,7 @@ def simulate(amount_of_particles = 100, interaction_strength = 1, cut_off = 5, k
             accepted += 1
 
         if s % N==0: 
-            print(f"\rStep {s} of {steps} ({s/steps:.2%})", end="")
+            print(f"\rSimulating step {s} of {steps} ({s/steps:.2%})", end="")
 
             if s < steps // 5:         #check acceptance every N steps and adjust for the first 20% of the simulation
                 acceptance = accepted / N
@@ -114,4 +114,4 @@ def simulate(amount_of_particles = 100, interaction_strength = 1, cut_off = 5, k
             EQUILIBRATION_STEPS = equilibration_steps,
             CUT_OFF = cut_off
             )
-    print('\nDone!')
+    print('\rSimulation Done!')
