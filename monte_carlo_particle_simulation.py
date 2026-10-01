@@ -20,7 +20,7 @@ def compute_energy_difference(particle_number, new_position, positions, box_size
     return new_energy - old_energy
 
 
-def simulate(amount_of_particles = 100, interaction_strength = 1, cut_off = 5, kT = 1, box_size = 50, particle_diameter = 1, starting_position = 'random',  steps=10**7, equilibration_steps=10**6, monte_carlo_steps_per_frame=None, filename = None):
+def simulate(filename, potential, amount_of_particles = 100, kT = 1, box_size = 50, particle_diameter = 1, starting_position = 'random',  steps=10**7, equilibration_steps=10**6, monte_carlo_steps_per_frame=None):
 
     #rename and rescale variables
     N = amount_of_particles
@@ -28,23 +28,7 @@ def simulate(amount_of_particles = 100, interaction_strength = 1, cut_off = 5, k
     max_displacement = 0.25 * d
     if monte_carlo_steps_per_frame is None:
         monte_carlo_steps_per_frame = N
-    if filename is None:
-        filename = f'{interaction_strength}_kT {N}_particles'
-    volume_fraction = (N * d**2) / box_size**2
-
-    #define potential
-    def potential(r, sigma=d, epsilon=interaction_strength * kT):
-        if epsilon == 0:
-            return 0
-        
-        s_r = sigma / r
-        return np.where(
-            r > cut_off,
-            0,
-            4 * epsilon * (s_r ** 12 - s_r ** 6)
-        )
-
-    
+    volume_fraction = (N * d**2) / box_size**2    
 
     #set particle starting positions
     if starting_position == 'array':
@@ -56,14 +40,53 @@ def simulate(amount_of_particles = 100, interaction_strength = 1, cut_off = 5, k
             (i // cols) * d + d / 2])
 
     elif starting_position == 'random':
-        x_pos = [np.random.uniform(0,box_size) for _ in range(N)]
-        y_pos = [np.random.uniform(0, box_size) for _ in range(N)]
+        # Max placement attempts per particle to avoid infinite loops at high density
+        max_attempts = 1000
+        positions_list = []
+
+        for i in range(N):
+            placed = False
+            attempts = 0
+            while not placed and attempts < max_attempts:
+                # Generate a candidate coordinate (keeping particle fully inside box)
+                # If particles can cross boundaries (PBC), use (0, box_size) instead
+                candidate = np.random.uniform(d / 2.0, box_size - d / 2.0, size=2)
+                
+                if len(positions_list) == 0:
+                    positions_list.append(candidate)
+                    placed = True
+                else:
+                    existing_pos = np.array(positions_list)
+                    dx = existing_pos[:, 0] - candidate[0]
+                    dy = existing_pos[:, 1] - candidate[1]
+
+                    # --- Uncomment if using Periodic Boundary Conditions (PBC) ---
+                    # dx = dx - box_size * np.round(dx / box_size)
+                    # dy = dy - box_size * np.round(dy / box_size)
+
+                    distances = np.sqrt(dx**2 + dy**2)
+
+                    # Check if candidate overlaps with any existing particle
+                    if np.all(distances >= d):
+                        positions_list.append(candidate)
+                        placed = True
+                
+                attempts += 1
+
+            if not placed:
+                raise RuntimeError(
+                    f"Failed to place particle {i+1}/{N} without overlap after {max_attempts} attempts. "
+                    f"The target density (packing fraction) is too high for random placement."
+                )
+
+        # Output shape: (2, N) matching your original positions = np.array([x_pos, y_pos])
+        positions = np.array(positions_list).T
 
     else:
-        x_pos = [np.random.uniform(0, box_size) for _ in range(N)]
-        y_pos = [np.random.uniform(0, box_size) for _ in range(N)]
-
-    positions = np.array([x_pos, y_pos])
+        # Default / fallback placement (e.g., random without overlap constraint, or grid)
+        x_pos = np.random.uniform(0, box_size, size=N)
+        y_pos = np.random.uniform(0, box_size, size=N)
+        positions = np.array([x_pos, y_pos])
 
     history=[]
 
@@ -105,13 +128,11 @@ def simulate(amount_of_particles = 100, interaction_strength = 1, cut_off = 5, k
             PARTICLE_RADIUS=d/2,
 
             AMOUNT_OF_PARTICLES=N, ##optional information
-            INTERACTION_STRENGTH=f'{interaction_strength} kT',
             VOLUME_FRACTION=volume_fraction,
             kT=kT,
             STARTING_POSITION = starting_position,
             AMOUNT_OF_STEPS = steps,
             STEPS_PER_FRAME = monte_carlo_steps_per_frame,
             EQUILIBRATION_STEPS = equilibration_steps,
-            CUT_OFF = cut_off
             )
-    print('\rSimulation Done!')
+    print('\rSimulation Done!                                      ')
