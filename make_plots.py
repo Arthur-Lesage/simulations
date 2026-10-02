@@ -52,10 +52,10 @@ def repulsive_yukawa(r, sigma=1.0, kappa=1.5, epsilon=1.0, cutoff=cut_off):
     choices = [np.inf, v_yukawa, 0.0]
     return np.select(conditions, choices)
 
-potential = lennard_jones
-filename = 'lennard_jones.npz'
+potential = attractive_square_well
+filename = potential.__name__
 
-TPI_data = np.load(f"TPI result data/{filename}", allow_pickle=True)
+TPI_data = np.load(f"TPI result data/{filename}.npz", allow_pickle=True)
 hist = TPI_data['POTENTIAL_HISTORY']
 r = TPI_data['r']
 

@@ -57,7 +57,7 @@ def repulsive_yukawa(r, sigma=1.0, kappa=1.5, epsilon=1.0, cutoff=cut_off):
     choices = [np.inf, v_yukawa, 0.0]
     return np.select(conditions, choices)
 
-potentials = [lennard_jones, hard_disk, attractive_square_well, repulsive_square_well, attractive_yukawa, repulsive_yukawa]
+potentials = [repulsive_square_well, attractive_yukawa, repulsive_yukawa]
 
 start_time = datetime.now()
 print(f"Started at {start_time.strftime('%Y-%m-%d %H:%M:%S')}")
