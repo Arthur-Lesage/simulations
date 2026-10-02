@@ -52,36 +52,23 @@ def repulsive_yukawa(r, sigma=1.0, kappa=1.5, epsilon=1.0, cutoff=cut_off):
     choices = [np.inf, v_yukawa, 0.0]
     return np.select(conditions, choices)
 
-potential = attractive_square_well
+potential = repulsive_yukawa
 filename = potential.__name__
 
 TPI_data = np.load(f"TPI result data/{filename}.npz", allow_pickle=True)
 hist = TPI_data['POTENTIAL_HISTORY']
 r = TPI_data['r']
 
-colors = plt.cm.RdYlGn_r(np.linspace(0, 1, len(hist)))
-
-fig, ax = plt.subplots(figsize=(8, 5))
-
-for i, h in enumerate(hist):
-    ax.plot(r, h, color=colors[i], alpha=0.7)
-
-ax.set_xlabel('r')
-ax.set_ylabel('Potential')
-
-sm = plt.cm.ScalarMappable(cmap='RdYlGn_r', norm=plt.Normalize(vmin=0, vmax=len(hist) - 1))
-sm.set_array([])
-cbar = fig.colorbar(sm, ax=ax)
-cbar.set_label('First iteration to last iteration')
-
+plt.plot(r, hist[-1], linewidth = 4, color = 'red', alpha = 1, label = 'Final potential found by TPI')
 plt.plot(r, hist[0], color = 'green', alpha = 0.7, label = 'Initial guess')
-plt.plot(r, hist[-1], color = 'red', alpha = 0.7, label = 'Final potential found by TPI')
 plt.plot(r, potential(r), color= 'blue', alpha = 0.7, label = 'Actual potential')
 
-
-plt.title('TPI iterations vs real potential')
+plt.title(f'TPI vs simulated {filename.replace('_', ' ')} potential')
+plt.xlabel('r')
+plt.ylabel('Potential')
 plt.ylim(-1.2,1.2)
 plt.xlim(0.9,3)
 
 plt.legend()
-plt.show()
+#plt.show()
+plt.savefig(f'TPI result plots/{potential.__name__}', bbox_inches = 'tight')
